@@ -1,0 +1,36 @@
+{
+  "studioId": "ftstva9cb5mw9p43",
+  "image": "toast_card_2.png",
+  "elements": [
+    {
+      "file": "ios/App/DesignLab/ToastCardLab.swift",
+      "height": 38,
+      "line": 72,
+      "tag": "ToastCard",
+      "width": 186.3333333333333,
+      "x": 107.83333333333334,
+      "y": 142
+    },
+    {
+      "file": "ios/App/DesignLab/ToastCardLab.swift",
+      "height": 22,
+      "line": 23,
+      "tag": "ChipGlyph",
+      "width": 22,
+      "x": 115.83333333333334,
+      "y": 150
+    },
+    {
+      "file": "ios/App/DesignLab/ToastCardLab.swift",
+      "height": 18,
+      "line": 29,
+      "tag": "ToastText",
+      "width": 130.3333333333333,
+      "x": 147.83333333333334,
+      "y": 152
+    }
+  ],
+  "height": 874,
+  "scale": 3,
+  "width": 402
+}

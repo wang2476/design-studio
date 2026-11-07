@@ -105,6 +105,14 @@
       "kind": "link",
       "hash": "1a72f6a36656836f44f22f4a536dddbc642d4654d1a7dae3b506b27518a0a4ee"
     },
+    ".agents/skills/studio-module-swiftview-use-swiftview/SKILL.md": {
+      "kind": "file",
+      "hash": "41864e4a4d3f8fd84b6829b9597edec2bf99511c6c729dcf63c053b071246859"
+    },
+    ".claude/skills/studio-module-swiftview-use-swiftview": {
+      "kind": "link",
+      "hash": "631a79fb24a4189a6156b3f371a3c101fc18c3bf4b158b7f77a9a45f1f2911e9"
+    },
     ".agents/skills/studio-module-systems-document-component/SKILL.md": {
       "kind": "file",
       "hash": "8f6a7adefe4c804776c40cf6585c8f4119b6ec90b118354f3bee579e3ff9917f"
