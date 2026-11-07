@@ -3,7 +3,7 @@
 // Embeds show the render fitted to their box.
 import { useEffect, useState } from 'react';
 import { SmartPhone01Icon } from '@hugeicons/core-free-icons';
-import { readSource, type ArtifactContext, type EmbedProps, type FileTypeModule } from '#studio/data';
+import { callModule, readSource, useMe, type ArtifactContext, type EmbedProps, type FileTypeModule } from '#studio/data';
 import { files, images } from './loader';
 import { fixPrompt, parseSwiftView, type SwiftElement, type SwiftView } from './swiftView';
 
@@ -22,7 +22,9 @@ function resolve(ctx: ArtifactContext, source: string): Loaded {
   const view = parseSwiftView(source);
   if ('error' in view) return view;
   const key = `/prototypes/${ctx.proto.contributorKey}/${ctx.proto.id}/${dirOf(ctx.item.path)}${view.image}`;
-  return { view, imageUrl: images[key] ?? null };
+  const url = images[key];
+  // Re-rendering keeps the file name, so the stamp is what makes the browser fetch the new pixels.
+  return { view, imageUrl: url ? `${url}${view.rendered ? `${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(view.rendered)}` : ''}` : null };
 }
 
 async function load(ctx: ArtifactContext): Promise<Loaded | undefined> {
@@ -84,7 +86,33 @@ function Inspector({ name, el }: { name: string; el: SwiftElement | null }) {
   );
 }
 
-function SwiftViewPage({ item, loaded }: Props) {
+// Runs the view's Lab file through the renderer again (server.ts). The page updates when the files land.
+function Rerender({ proto, item, view }: ArtifactContext & { view: SwiftView }) {
+  const me = useMe();
+  const [state, setState] = useState<{ busy: boolean; message: string }>({ busy: false, message: '' });
+  if (!import.meta.env.DEV || !view.source || me !== proto.contributorKey) return null;
+  const run = async () => {
+    setState({ busy: true, message: 'Rendering on the simulator…' });
+    try {
+      const { log } = await callModule<{ log: string }>('swiftview', 'render', { contributor: proto.contributorKey, prototype: proto.id, path: item.path });
+      setState({ busy: false, message: log || 'Rendered' });
+    } catch (err) {
+      console.error('[swiftview] re-render failed:', err);
+      setState({ busy: false, message: err instanceof Error ? err.message : String(err) });
+    }
+  };
+  return (
+    <div className='space-y-1'>
+      <button type='button' disabled={state.busy} onClick={() => void run()}
+        className='rounded-md border border-border px-3 py-1.5 text-sm disabled:opacity-50'>
+        {state.busy ? 'Rendering…' : 'Re-render'}
+      </button>
+      <div className='break-all text-xs text-muted-foreground'>{state.message || `${view.source.lab}`}</div>
+    </div>
+  );
+}
+
+function SwiftViewPage({ proto, item, loaded }: Props) {
   const [selected, setSelected] = useState<SwiftElement | null>(null);
   if ('error' in loaded) return <div className='p-8 text-sm text-destructive'>{loaded.error}</div>;
   return (
@@ -93,6 +121,7 @@ function SwiftViewPage({ item, loaded }: Props) {
         <Render view={loaded.view} imageUrl={loaded.imageUrl} selected={selected} onSelect={setSelected} />
       </div>
       <aside className='shrink-0 space-y-4 border-l border-border p-4' style={{ width: 288 }}>
+        <Rerender proto={proto} item={item} view={loaded.view} />
         <div className='text-xs uppercase text-muted-foreground'>{loaded.view.elements.length} tagged</div>
         <Inspector name={nameOf(item.path)} el={selected} />
       </aside>

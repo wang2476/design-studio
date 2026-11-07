@@ -1,7 +1,14 @@
 // The .swiftview format: what DesignLab's renderer writes as <name>.layout.json, plus the image it
 // describes and the file's permanent studioId. Frames are in points, origin top-left.
 export interface SwiftElement { tag: string; file: string; line: number; x: number; y: number; width: number; height: number }
-export interface SwiftView { image: string; width: number; height: number; scale: number; elements: SwiftElement[] }
+/** The Lab file and render name `pnpm swift` used, so Re-render can repeat it. */
+export interface SwiftSource { lab: string; name: string }
+export interface SwiftView {
+  image: string; width: number; height: number; scale: number; elements: SwiftElement[];
+  /** When it was last rendered (ISO); busts the cached image after a re-render. */
+  rendered: string | null;
+  source: SwiftSource | null;
+}
 
 const num = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 
@@ -12,7 +19,7 @@ export function parseSwiftView(source: string): SwiftView | { error: string } {
   } catch {
     return { error: 'Swift view is not valid JSON' };
   }
-  const { image, width, height, scale, elements } = raw;
+  const { image, width, height, scale, elements, rendered, source: from } = raw;
   if (typeof image !== 'string' || !/^[\w./-]+\.png$/i.test(image) || image.includes('..')) {
     return { error: 'Swift view needs "image": a PNG beside it, like "toast_card_1.png"' };
   }
@@ -23,7 +30,12 @@ export function parseSwiftView(source: string): SwiftView | { error: string } {
     return typeof el.tag === 'string' && typeof el.file === 'string' && num(el.line)
       && num(el.x) && num(el.y) && num(el.width) && num(el.height);
   });
-  return { image, width, height, scale: num(scale) && scale > 0 ? scale : 1, elements: parsedElements };
+  const src = from as Partial<SwiftSource> | undefined;
+  return {
+    image, width, height, scale: num(scale) && scale > 0 ? scale : 1, elements: parsedElements,
+    rendered: typeof rendered === 'string' ? rendered : null,
+    source: typeof src?.lab === 'string' && typeof src.name === 'string' ? { lab: src.lab, name: src.name } : null,
+  };
 }
 
 /** What Claude needs to change one tagged element: where it is in code, how big it is, and the ask. */
@@ -32,7 +44,7 @@ export function fixPrompt(view: string, el: SwiftElement, note: string): string 
   return [
     `In the Swift view ${view}, change the element tagged "${el.tag}" (${el.file}:${el.line}, ${frame}).`,
     note.trim() ? `Change: ${note.trim()}` : 'Change: (describe it)',
-    'Edit that line, then re-render the view with scripts/designlab-render.sh.',
+    'Edit that line, then re-render the view (Re-render in Design Studio, or pnpm swift).',
   ].join('\n');
 }
 

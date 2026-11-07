@@ -23,7 +23,8 @@
     "build:release": "pnpm test:release && pnpm build",
     "build:inspect": "node src/platform/node/check/inspect-build.js",
     "format": "biome format --write .",
-    "format:check": "biome format ."
+    "format:check": "biome format .",
+    "swift": "node src/modules/swiftview/cli.js"
   },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "^4.0.0",

@@ -105,9 +105,17 @@
       "kind": "link",
       "hash": "1a72f6a36656836f44f22f4a536dddbc642d4654d1a7dae3b506b27518a0a4ee"
     },
+    ".agents/skills/studio-module-rounds-use-rounds/SKILL.md": {
+      "kind": "file",
+      "hash": "de6794faaeb9d8751dac02d51c1ca551beb05ef42e3d3d694cdec6dacdbb34c4"
+    },
+    ".claude/skills/studio-module-rounds-use-rounds": {
+      "kind": "link",
+      "hash": "c407854c8150c86f43557cd78021bf7a92b901aea10861ff73bd61fc5c8cd6f5"
+    },
     ".agents/skills/studio-module-swiftview-use-swiftview/SKILL.md": {
       "kind": "file",
-      "hash": "41864e4a4d3f8fd84b6829b9597edec2bf99511c6c729dcf63c053b071246859"
+      "hash": "9cb1f9e296a8f4ecc8a37faa93df5c56e77892826dfa8427084eaf017d776887"
     },
     ".claude/skills/studio-module-swiftview-use-swiftview": {
       "kind": "link",
@@ -128,6 +136,14 @@
     ".claude/skills/studio-module-systems-setup-design-system": {
       "kind": "link",
       "hash": "bd6ea023e7ec6524fa7dbacaebaa986fba3493ecce4d0e1083ff4cc275a36a4a"
+    },
+    ".agents/skills/studio-module-videonotes-use-videonotes/SKILL.md": {
+      "kind": "file",
+      "hash": "29aa6750ebfee6164f348fc9a70ac888d49182f9b72d96505e740fe243ac4691"
+    },
+    ".claude/skills/studio-module-videonotes-use-videonotes": {
+      "kind": "link",
+      "hash": "a67b950c46fefa5282002b4acc5fdc5611f648ca63aefe1da55a66a9d8ee7901"
     }
   }
 }

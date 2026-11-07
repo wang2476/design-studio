@@ -1,6 +1,6 @@
 ---
 name: studio-module-swiftview-use-swiftview
-description: "Use Swift views in Design Studio when the capability is enabled."
+description: "Render SwiftUI #Previews into Design Studio as Swift views, inspect tagged elements, and act on fix prompts."
 ---
 
 <!-- studio:generated-skill -->

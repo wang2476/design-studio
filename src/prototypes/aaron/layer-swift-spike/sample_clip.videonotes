@@ -1,0 +1,21 @@
+{
+  "video": "sample_clip.mp4",
+  "summary": "Test pattern standing in for a reference clip.",
+  "notes": [
+    {
+      "id": "n_seed01",
+      "t": 2.5,
+      "text": "Borrow this easing on the counter.",
+      "author": "claude",
+      "createdAt": "2026-11-07T16:00:00.000Z"
+    },
+    {
+      "id": "n_ayec19",
+      "t": 4.2,
+      "text": "Slow fade here",
+      "author": "user",
+      "createdAt": "2026-11-07T21:30:30.938Z"
+    }
+  ],
+  "studioId": "yr6ftxk2j7xba5x9"
+}

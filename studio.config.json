@@ -15,7 +15,9 @@
     "view": true,
     "onboarding": true,
     "contributors": true,
-    "swiftview": true
+    "swiftview": true,
+    "videonotes": true,
+    "rounds": true
   },
   "systems": [
     "product",

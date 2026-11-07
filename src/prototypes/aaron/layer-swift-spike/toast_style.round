@@ -1,0 +1,36 @@
+{
+  "question": "Which toast card style should ship for Strava connected?",
+  "options": [
+    {
+      "n": 1,
+      "path": "toast_card_1.swiftview",
+      "label": "Glass",
+      "status": "rejected"
+    },
+    {
+      "n": 2,
+      "path": "toast_card_2.swiftview",
+      "label": "Solid",
+      "status": "picked"
+    },
+    {
+      "n": 3,
+      "path": "toast_card_3.swiftview",
+      "label": "Compact",
+      "status": "rejected"
+    }
+  ],
+  "decision": {
+    "option": 2,
+    "why": "Solid reads best over the map.",
+    "costs": {},
+    "checks": [
+      {
+        "text": "Check dark mode",
+        "done": true
+      }
+    ],
+    "date": "2026-11-07"
+  },
+  "studioId": "721e2rfdgbj5g627"
+}
