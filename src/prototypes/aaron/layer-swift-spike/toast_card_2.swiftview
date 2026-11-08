@@ -1,6 +1,11 @@
 {
   "studioId": "ftstva9cb5mw9p43",
   "image": "toast_card_2.png",
+  "rendered": "2026-11-08T18:21:33.132Z",
+  "source": {
+    "lab": "App/DesignLab/ToastCardLab.swift",
+    "name": "toast_card"
+  },
   "elements": [
     {
       "file": "ios/App/DesignLab/ToastCardLab.swift",
