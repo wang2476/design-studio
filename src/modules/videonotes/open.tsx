@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Video01Icon } from '@hugeicons/core-free-icons';
 import { canChangePrototype, readSource, useMe, writeSource, type ArtifactContext, type EmbedProps, type FileTypeModule } from '#studio/data';
+import { useLiveFile } from '../useLiveFile';
 import { files, videos } from './loader';
 import { formatTime, newNoteId, parseVideoNotes, withNotes, type VideoNote, type VideoNotes } from './videoNotes';
 
@@ -92,9 +93,10 @@ function Notes({ ctx, clip, editable, onSeek, now }: {
   );
 }
 
-function VideoNotesPage({ proto, item, loaded }: Props) {
+function VideoNotesPage({ proto, item, loaded: initial }: Props) {
   const video = useRef<HTMLVideoElement>(null);
   const me = useMe();
+  const loaded = useLiveFile({ proto, item }, initial, () => load({ proto, item }));
   if ('error' in loaded) return <div className='p-8 text-sm text-destructive'>{loaded.error}</div>;
   const seek = (t: number) => {
     if (!video.current) return;

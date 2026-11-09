@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { CheckListIcon } from '@hugeicons/core-free-icons';
 import { canChangePrototype, readSource, useMe, writeSource, type ArtifactContext, type FileTypeModule } from '#studio/data';
 import { ArtifactHost } from '#studio/ui';
+import { useLiveFile } from '../useLiveFile';
 import { files } from './loader';
 import { addOption, decide, parseRound, reopen, serialize, setStatus, summary, toggleCheck, type Option, type Round } from './round';
 
@@ -118,12 +119,13 @@ function AddOption({ ctx, round, onChange }: { ctx: ArtifactContext; round: Roun
   );
 }
 
-function RoundPage({ proto, item, loaded }: Props) {
+function RoundPage({ proto, item, loaded: initial }: Props) {
   const me = useMe();
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
-  if ('error' in loaded) return <div className='p-8 text-sm text-destructive'>{loaded.error}</div>;
   const ctx = { proto, item };
+  const loaded = useLiveFile(ctx, initial, () => load(ctx));
+  if ('error' in loaded) return <div className='p-8 text-sm text-destructive'>{loaded.error}</div>;
   const { round } = loaded;
   const editable = import.meta.env.DEV && canChangePrototype(proto, me);
   const onChange = (change: (r: Round) => Round) =>

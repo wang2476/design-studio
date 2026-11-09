@@ -4,8 +4,9 @@
 import AppKit
 import WebKit
 
-let port = ProcessInfo.processInfo.environment["STUDIO_PORT"] ?? "5173"
-let home = URL(string: "http://localhost:\(port)/")!
+// StudioURL (set at build time) points at another Mac's hosted studio; empty means run it here.
+let remote = (Bundle.main.object(forInfoDictionaryKey: "StudioURL") as? String).flatMap { $0.isEmpty ? nil : URL(string: $0) }
+let home = remote ?? URL(string: "http://localhost:5173/")!
 let repo = Bundle.main.object(forInfoDictionaryKey: "StudioRepo") as? String ?? ""
 
 @main
@@ -41,6 +42,8 @@ final class App: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDele
         NSApp.activate()
         buildMenu()
 
+        // A hosted studio is the host's job to keep up; load it straight away.
+        if remote != nil { web.load(URLRequest(url: home)); return }
         Task {
             if await !serverUp() { startServer() }
             for _ in 0..<120 {
@@ -74,12 +77,19 @@ final class App: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDele
     // Links that leave the studio open in the default browser.
     func webView(_ webView: WKWebView, decidePolicyFor action: WKNavigationAction,
                  decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
-        if let url = action.request.url, url.host != "localhost", action.navigationType == .linkActivated {
+        if let url = action.request.url, url.host != home.host, action.navigationType == .linkActivated {
             NSWorkspace.shared.open(url)
             decisionHandler(.cancel)
             return
         }
         decisionHandler(.allow)
+    }
+
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation nav: WKNavigation!, withError error: Error) {
+        NSLog("Design Studio: could not load \(home): \(error.localizedDescription)")
+    }
+    func webView(_ webView: WKWebView, didFinish nav: WKNavigation!) {
+        NSLog("Design Studio: loaded \(webView.url?.absoluteString ?? "?")")
     }
 
     func webView(_ webView: WKWebView, createWebViewWith config: WKWebViewConfiguration,

@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { SmartPhone01Icon } from '@hugeicons/core-free-icons';
 import { callModule, readSource, useMe, type ArtifactContext, type EmbedProps, type FileTypeModule } from '#studio/data';
+import { useLiveFile } from '../useLiveFile';
 import { files, images } from './loader';
 import { fixPrompt, parseSwiftView, type SwiftElement, type SwiftView } from './swiftView';
 
@@ -112,8 +113,9 @@ function Rerender({ proto, item, view }: ArtifactContext & { view: SwiftView }) 
   );
 }
 
-function SwiftViewPage({ proto, item, loaded }: Props) {
+function SwiftViewPage({ proto, item, loaded: initial }: Props) {
   const [selected, setSelected] = useState<SwiftElement | null>(null);
+  const loaded = useLiveFile({ proto, item }, initial, () => load({ proto, item }));
   if ('error' in loaded) return <div className='p-8 text-sm text-destructive'>{loaded.error}</div>;
   return (
     <div className='flex min-h-0 min-w-0 flex-1 bg-background text-foreground'>

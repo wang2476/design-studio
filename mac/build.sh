@@ -1,5 +1,6 @@
 #!/bin/sh
 # Build "Design Studio.app" into ~/Applications (override with APP_DIR).
+#   STUDIO_URL=https://host.tailnet.ts.net mac/build.sh   → open another Mac's hosted studio instead
 set -eu
 here="$(cd "$(dirname "$0")" && pwd)"
 repo="$(dirname "$here")"
@@ -32,6 +33,7 @@ cat > "$tmp/out/Info.plist" <<EOF
   <key>NSHighResolutionCapable</key><true/>
   <key>NSAppTransportSecurity</key><dict><key>NSAllowsLocalNetworking</key><true/></dict>
   <key>StudioRepo</key><string>$repo</string>
+  <key>StudioURL</key><string>${STUDIO_URL:-}</string>
 </dict></plist>
 EOF
 

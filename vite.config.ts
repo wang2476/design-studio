@@ -72,6 +72,9 @@ export default defineConfig({
   // Pages supplies a path without a trailing slash; data URLs append relative paths.
   base: `${(process.env.STUDIO_BASE_PATH || '/').replace(/\/+$/, '')}/`,
   publicDir: '../public',
+  // Reached from other machines through `tailscale serve` (mac/host.sh), which proxies the tailnet name.
+  // IPv4 loopback only: serve proxies to 127.0.0.1, and nothing else on the network can reach it.
+  server: { host: '127.0.0.1', allowedHosts: ['.ts.net'] },
   css: { postcss: { plugins: [scopedUtilities()] } },
   build: {
     outDir: '../dist',
