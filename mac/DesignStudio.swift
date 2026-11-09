@@ -88,6 +88,19 @@ final class App: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDele
         return nil
     }
 
+    // Go menu: each item's representedObject is a studio path.
+    @objc func go(_ sender: NSMenuItem) {
+        guard let path = sender.representedObject as? String else { return }
+        web.load(URLRequest(url: home.appending(path: path)))
+    }
+
+    // The page owns ⌘K; replay it so the menu item opens the same search.
+    @objc func search() {
+        web.evaluateJavaScript("""
+            document.dispatchEvent(new KeyboardEvent('keydown', {key: 'k', metaKey: true, bubbles: true}))
+            """)
+    }
+
     @objc func reload() { web.reload() }
     @objc func goHome() { web.load(URLRequest(url: home)) }
     @objc func back() { web.goBack() }
@@ -117,6 +130,16 @@ final class App: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDele
                       item("Home", #selector(goHome), "H", mine: true),
                       item("Back", #selector(back), "[", mine: true),
                       item("Forward", #selector(forward), "]", mine: true)])
+        func place(_ t: String, _ path: String, _ k: String) -> NSMenuItem {
+            let i = item(t, #selector(go(_:)), k, mine: true)
+            i.representedObject = path
+            return i
+        }
+        menu("Go", [item("Search the Studio", #selector(search), "k", mine: true), .separator(),
+                    place("Home", "", "1"), place("Prototypes", "prototypes", "2"),
+                    place("Systems", "systems", "3"), place("Documentation", "documentation", "4"),
+                    place("Review", "review", "5"), .separator(),
+                    place("Settings", "settings", ",")])
         menu("Window", [item("Minimize", #selector(NSWindow.miniaturize(_:)), "m"),
                         item("Close", #selector(NSWindow.performClose(_:)), "w")])
         NSApp.mainMenu = main
