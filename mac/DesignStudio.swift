@@ -6,7 +6,7 @@ import WebKit
 
 // StudioURL (set at build time) points at another Mac's hosted studio; empty means run it here.
 let remote = (Bundle.main.object(forInfoDictionaryKey: "StudioURL") as? String).flatMap { $0.isEmpty ? nil : URL(string: $0) }
-let home = remote ?? URL(string: "http://localhost:5173/")!
+let local = URL(string: "http://localhost:5173/")!
 let repo = Bundle.main.object(forInfoDictionaryKey: "StudioRepo") as? String ?? ""
 
 @main
@@ -15,6 +15,7 @@ final class App: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDele
     var window: NSWindow!
     var web: WKWebView!
     var server: Process?
+    var home = remote ?? local
 
     static func main() {
         let app = NSApplication.shared
@@ -42,9 +43,14 @@ final class App: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDele
         NSApp.activate()
         buildMenu()
 
-        // A hosted studio is the host's job to keep up; load it straight away.
-        if remote != nil { web.load(URLRequest(url: home)); return }
         Task {
+            // A hosted studio is the host's job to keep up. If it doesn't answer, run the studio here.
+            if remote != nil {
+                if await serverUp(timeout: 4) { web.load(URLRequest(url: home)); return }
+                NSLog("Design Studio: \(home) not answering, falling back to local")
+                home = local
+                window.title = "Design Studio (local)"
+            }
             if await !serverUp() { startServer() }
             for _ in 0..<120 {
                 if await serverUp() { break }
@@ -54,9 +60,9 @@ final class App: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDele
         }
     }
 
-    func serverUp() async -> Bool {
+    func serverUp(timeout: TimeInterval = 1) async -> Bool {
         var req = URLRequest(url: home)
-        req.timeoutInterval = 1
+        req.timeoutInterval = timeout
         return (try? await URLSession.shared.data(for: req)) != nil
     }
 
